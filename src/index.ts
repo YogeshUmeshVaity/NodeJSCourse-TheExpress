@@ -1,30 +1,16 @@
-import express from 'express'
+import express, { NextFunction, Request, Response } from 'express'
+
 const app = express()
 
 app.get(
   '/user/:id',
-  function (req, res, next) {
-    console.log('before request handler function 1')
-    next('route')
-  },
-  function (req, res, next) {
-    // Won't reach here.
-    console.log('before request handler function 2')
+  (request: Request, response: Response, next: NextFunction) => {
+    console.log(`The user id is ${request.params.id}`)
     next()
+  },
+  (request: Request, response: Response) => {
+    response.send(`Requested user id is ${request.params.id} `)
   }
 )
-
-app.get('/user/:id', function (req, res, next) {
-  console.log('handling request')
-  res.sendStatus(200)
-  // This won't make any difference, since there is just one function.
-  // This should be next()
-  next('route')
-})
-
-app.get('/user/:id', function (req, res, next) {
-  console.log('after request handler')
-  next()
-})
 
 app.listen(3000)
